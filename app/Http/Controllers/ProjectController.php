@@ -44,7 +44,7 @@ class ProjectController extends Controller
     {
         $validate = $request->validated();
 
-        $project = Project::where('id', $id)->with('contacts')->first();
+        $project = Project::where('id', $id)->first();
         if($project === NULL) return Response::json(NULL, 404);
         $oldValues = $project->getOriginal();
 
@@ -56,7 +56,7 @@ class ProjectController extends Controller
 
     public function destroy($id)
     {
-        $project = Project::where('id', $id)->with('contacts')->first();
+        $project = Project::where('id', $id)->first();
         if($project === NULL) return Response::json(NULL, 404);
 
         $contacts = $project->contacts;
