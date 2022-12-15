@@ -32,5 +32,5 @@ Route::prefix('contacts')->group(function () {
     Route::post('/', [ContactController::class, 'create']);
     Route::post('/{id}', [ContactController::class, 'update']);
     Route::delete('/{id}', [ContactController::class, 'destroy']);
-    Route::delete('/assign/{id}', [ContactController::class, 'assign']);
+    Route::get('/assign/{contactId}/{projectId}', [ContactController::class, 'assign']);
 });
