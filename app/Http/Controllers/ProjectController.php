@@ -17,10 +17,18 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = $request->filter <= 2 && $request->filter >= 0 ? $request->filter : '%';
+        $reqFilter = $request->filter;
+        $all = $request->all !== NULL && $request->all;
+        $filter = $reqFilter !== NULL && $reqFilter <= 2 && $reqFilter >= 0 ? $reqFilter : '%';
 
-        $data = Project::where('status',  $filter === '%' ? 'LIKE' : '=', $filter)->with('contacts')->paginate(10);
-        return Response::json($data, 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        //if count provided return with the count only, dont make unnecessary select - navbar extra
+        if($all){
+            $allProjectCount = Project::all()->count();
+            return Response::json($allProjectCount, 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        }else{
+            $data = Project::where('status',  $filter === '%' ? 'LIKE' : '=', $filter)->with('contacts')->paginate(10);
+            return Response::json($data, 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        }
     }
 
     public function create(ProjectRequest $request)
