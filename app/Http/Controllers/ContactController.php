@@ -3,83 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+
+use App\Http\Requests\ContactRequest;
+
 
 class ContactController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function create(ContactRequest $request)
     {
-        //
+        $validate = $request->validated();
+
+        $contact = Contact::create($validate);
+
+        return Response::json($contact, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function update(ContactRequest $request, $id)
     {
-        //
+        $validate = $request->validated();
+
+        $contact = Contact::where('id', $id)->first();
+        if($contact === NULL) return Response::json(['message' => 'Contact not found!'], 404);
+
+        $contact->update($validate);
+
+        return Response::json('OK', 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function destroy($id)
     {
-        //
+        $contact = Contact::where('id', $id)->first();
+        if($contact === NULL) return Response::json(['message' => 'Contact not found!'], 404);
+
+        $contact->delete();
+        return Response::json("DELETED", 200, []);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Contact  $contact
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Contact $contact)
-    {
-        //
-    }
+    public function assign($contactId, $projectId) {
+        $contact = Contact::where('id', $contactId)->first();
+        if($contact === NULL) return Response::json(['message' => 'Contact not found!'], 404);
+        //If getting -1 for projectId remove the contact from
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Contact  $contact
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Contact $contact)
-    {
-        //
-    }
+        if($projectId === "-1") {
+            $contact->project_id = NULL;
+        }else{
+            $project = Project::where('id', $projectId)->with('contacts')->first();
+            if($project === NULL) return Response::json(['message' => 'Project not found!'], 404);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Contact  $contact
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Contact $contact)
-    {
-        //
-    }
+            $contact->project_id = $projectId;
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Contact  $contact
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Contact $contact)
-    {
-        //
+        $contact->save();
+        return Response::json($projectId === "-1" ? "REMOVED" : "OK", 200);
     }
 }
