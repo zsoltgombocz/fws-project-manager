@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use App\Enums\ProjectStatus;
+use App\Http\Requests\ProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -12,74 +15,54 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $filter = $request->filter <= 2 && $request->filter >= 0 ? $request->filter : '%';
+
+        $data = Project::where('status',  $filter === '%' ? 'LIKE' : '=', $filter)->with('contacts')->paginate(10);
+        return Response::json($data, 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(ProjectRequest $request)
     {
-        //
+        $validate = $request->validated();
+
+        $project = Project::create($validate);
+
+        return Response::json($project, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($id)
     {
-        //
+        $project = Project::where('id', $id)->with('contacts')->first();
+        if($project === NULL) return Response::json(NULL, 404);
+
+        return Response::json($project, 200, []);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Project $project)
+    public function update(ProjectRequest $request, $id)
     {
-        //
+        $validate = $request->validated();
+
+        $project = Project::where('id', $id)->with('contacts')->first();
+        if($project === NULL) return Response::json(NULL, 404);
+        $oldValues = $project->getOriginal();
+
+        $project->update($validate);
+        //dispatch job to send email
+
+        return Response::json('OK', 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Project $project)
+    public function destroy($id)
     {
-        //
-    }
+        $project = Project::where('id', $id)->with('contacts')->first();
+        if($project === NULL) return Response::json(NULL, 404);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Project $project)
-    {
-        //
-    }
+        $contacts = $project->contacts;
+        $project->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Project $project)
-    {
-        //
+        //dispatch job to send email about removal
+        return Response::json("DELETED", 200, []);
     }
 }
