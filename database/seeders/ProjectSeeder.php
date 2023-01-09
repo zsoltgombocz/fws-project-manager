@@ -17,7 +17,7 @@ class ProjectSeeder extends Seeder
     public function run()
     {
         for($i = 0; $i < 25; $i++){
-            Project::create(["name" => "Projekt".$i, "description" => "...", "status" => rand(0, 3)]);
+            Project::create(["name" => "Projekt".$i, "description" => "...", "status" => rand(0, 2)]);
         }
     }
 }
