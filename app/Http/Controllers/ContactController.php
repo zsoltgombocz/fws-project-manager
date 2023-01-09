@@ -12,6 +12,12 @@ use App\Http\Requests\ContactRequest;
 
 class ContactController extends Controller
 {
+    public function index()
+    {
+        $data = Contact::all();
+        return Response::json($data, 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+    }
+
     public function create(ContactRequest $request)
     {
         $validate = $request->validated();
@@ -45,7 +51,7 @@ class ContactController extends Controller
     public function assign($contactId, $projectId) {
         $contact = Contact::where('id', $contactId)->first();
         if($contact === NULL) return Response::json(['message' => 'Contact not found!'], 404);
-        //If getting -1 for projectId remove the contact from
+        //If getting -1 for projectId remove the contact from assigned project
 
         if($projectId === "-1") {
             $contact->project_id = NULL;
