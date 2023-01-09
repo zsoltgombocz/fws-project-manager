@@ -22,15 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectController::class, 'index']);
-    Route::get('/{id}', [ProjectController::class, 'show']);
-    Route::post('/update/{id}', [ProjectController::class, 'update']);
     Route::post('/create', [ProjectController::class, 'create']);
+    Route::get('/{id}', [ProjectController::class, 'show']);
+    Route::put('/{id}', [ProjectController::class, 'update']);
     Route::delete('/{id}', [ProjectController::class, 'destroy']);
 });
 
 Route::prefix('contacts')->group(function () {
-    Route::post('/', [ContactController::class, 'create']);
-    Route::post('/{id}', [ContactController::class, 'update']);
+    Route::get('/', [ContactController::class, 'index']);
+    Route::post('/create', [ContactController::class, 'create']);
+    Route::put('/{id}', [ContactController::class, 'update']);
     Route::delete('/{id}', [ContactController::class, 'destroy']);
-    Route::get('/assign/{contactId}/{projectId}', [ContactController::class, 'assign']);
+    Route::patch('/assign/{contactId}/{projectId}', [ContactController::class, 'assign']);
 });
