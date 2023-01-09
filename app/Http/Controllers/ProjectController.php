@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Enums\ProjectStatus;
 use App\Http\Requests\ProjectRequest;
+use App\Jobs\SendEmails;
 
 class ProjectController extends Controller
 {
@@ -50,16 +52,25 @@ class ProjectController extends Controller
 
     public function update(ProjectRequest $request, $id)
     {
-        $validate = $request->validated();
+        $project = Project::where('id', $id)->with('contacts')->first();
+        if($project !== NULL) {
+            $validate = $request->validated();
+            if($project === NULL) return Response::json(NULL, 404);
+            $oldValues = $project->getOriginal();
 
-        $project = Project::where('id', $id)->first();
-        if($project === NULL) return Response::json(NULL, 404);
-        $oldValues = $project->getOriginal();
+            $project->update($validate);
 
-        $project->update($validate);
-        //dispatch job to send email
+            //dispatch job to send email
+            if($project->wasChanged()) {
+                $contacts = $project->contacts;
 
-        return Response::json('OK', 200);
+                SendEmails::dispatch($contacts, $oldValues, $project->getChanges());
+            }
+
+            //send back project data to get the list of the contacts thus the frontend will update them if the
+            //main update is success
+            //return Response::json($project, 200);
+        }else return Response::json(NULL, 404);
     }
 
     public function destroy($id)
