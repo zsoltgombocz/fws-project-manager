@@ -29,4 +29,17 @@ class ProjectRequest extends FormRequest
             'status' => 'required|numeric|between:0,2',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Projekt nevének kitöltése kötelező!',
+            'name.max' => 'A projekt neve nem haladhatja meg a 255 karaktert!',
+            'description.required' => 'Projekt leírása kötelező!',
+            'description.max' => 'A projekt leírása nem haladhatja meg a 2048 karaktert!',
+            'status.required' => 'Státusz megadása kötelező!',
+            'status.numeric' => 'A státusz típusa csak szám lehet!',
+            'status.between' => 'A státusznak 0 és 2 közé kell esnie!',
+        ];
+    }
 }
