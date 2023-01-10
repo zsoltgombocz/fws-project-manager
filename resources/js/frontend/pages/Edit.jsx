@@ -1,7 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { api } from '../../api/api';
-import { ContactContext } from '../../state/ContactContext';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ProjectContext } from '../../state/ProjectContext';
 import FormSuccess from '../atom/FormSuccess';
 import FormErrors from '../components/FormErrors';
@@ -27,7 +25,6 @@ const Edit = () => {
     const handleFormSubmit = (e, formData) => {
         e.preventDefault();
         updateProject(formData.id, formData).then(res => {
-            console.log(res);
             setSuccessMessage('Adatok frissítve!');
             setErrors([]);
             refreshProjects();

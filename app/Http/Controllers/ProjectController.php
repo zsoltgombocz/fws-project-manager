@@ -80,9 +80,7 @@ class ProjectController extends Controller
                 SendEmails::dispatch($contacts, $oldValues, $project->getChanges());
             }
 
-            //send back project data to get the list of the contacts thus the frontend will update them if the
-            //main update is success
-            //return Response::json($project, 200);
+            return Response::json($project, 200);
         }else return Response::json(NULL, 404);
     }
 
