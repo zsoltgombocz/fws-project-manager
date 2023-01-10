@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Response;
 use App\Enums\ProjectStatus;
 use App\Http\Requests\ProjectRequest;
 use App\Jobs\SendEmails;
+use App\Models\Contact;
 
 class ProjectController extends Controller
 {
@@ -36,8 +37,18 @@ class ProjectController extends Controller
     public function create(ProjectRequest $request)
     {
         $validate = $request->validated();
-
         $project = Project::create($validate);
+
+        //assign all contact that has been passed with the payload
+        $contacts = $validate['contacts'];
+        if(count($contacts) > 0) {
+            foreach($contacts as $contact) {
+                $c = Contact::where('id', $contact)->first();
+                if($c !== NULL) {
+                    $c->assignToProject($project->id);
+                }
+            }
+        }
 
         return Response::json($project, 200);
     }
@@ -59,6 +70,8 @@ class ProjectController extends Controller
             $oldValues = $project->getOriginal();
 
             $project->update($validate);
+
+            $project->updateContactList($validate['contacts']);
 
             //dispatch job to send email
             if($project->wasChanged()) {
