@@ -27,6 +27,8 @@ class ProjectRequest extends FormRequest
             'name' => 'required|max:255',
             'description' => 'required|max:2048',
             'status' => 'required|numeric|between:0,2',
+            'contacts' => 'sometimes|array',
+            'contacts.*' => 'integer'
         ];
     }
 
