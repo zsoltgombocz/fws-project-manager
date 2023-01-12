@@ -28,8 +28,8 @@ const ProjectForm = ({ projectData, onSubmitPressed, create = true, disableForm 
         return projectData.contacts.filter(c => c.id === contact.id).length === 1;
     }
 
-    const handleContactChecked = (e, id) => {
-        if (e.target.checked) {
+    const handleContactChecked = (checked, id) => {
+        if (checked) {
             setContacts((prev) => {
                 return [...prev, id];
             });
@@ -38,6 +38,19 @@ const ProjectForm = ({ projectData, onSubmitPressed, create = true, disableForm 
             setContacts(newArr);
         }
     }
+
+    //If we delete a contact, and update the list of the available ones,
+    //we should listen to the change as we have to remove the already selected contact
+    //if it has been deleted
+    //we have to loop through the selected contacts and check wheter it is deleted or not
+    useEffect(() => {
+        const allContactIds = allContact.map(c => c.id);
+        contacts.forEach(contact => {
+            if (!allContactIds.includes(contact)) {
+                handleContactChecked(false, contact);
+            }
+        });
+    }, [allContact])
 
     useEffect(() => { setFormData({ ...formData, contacts }) }, [contacts])
 
@@ -98,7 +111,7 @@ const ProjectForm = ({ projectData, onSubmitPressed, create = true, disableForm 
                             <h2 className={'text-center text-xl'}>Kapcsolattartók</h2>
                             <div className={'mb-6'}>
                                 {allContact.map((contact) => (
-                                    <ContactListItem key={contact.id + '' + contact.email} id={contact.id} name={contact.name} email={contact.email} isAssigned={isContactAssignedToProject(contact)} variant={'project'} checkboxChanged={handleContactChecked} />
+                                    <ContactListItem key={contact.id + '' + contact.email} id={contact.id} name={contact.name} email={contact.email} isAssigned={isContactAssignedToProject(contact)} variant={'project'} checkboxChanged={(e) => handleContactChecked(e.target.checked, contact.id)} />
                                 ))}
                             </div>
                         </label>
