@@ -8,7 +8,7 @@ import ProjectForm from '../components/ProjectForm';
 const Edit = () => {
     const { id } = useParams();
     const [project, setProject] = useState(null);
-    const { updateProject, refreshProjects, getProjectInformation } = useContext(ProjectContext)
+    const { updateProject, refreshProjects, getProjectInformation } = useContext(ProjectContext);
     const navigate = useNavigate();
 
     const [errors, setErrors] = useState([]);
