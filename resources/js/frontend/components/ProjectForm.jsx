@@ -70,7 +70,7 @@ const ProjectForm = ({ projectData, onSubmitPressed, create = true, disableForm 
                         rounded-md
                         border-gray-300
                         shadow-sm
-                        focus:border-indigo-300 focus:ring focus:ring-alice focus:ring-opacity-25
+                        focus:border-indigo-300 focus:ring focus:ring-alice focus:ring-opacity-25 disab
                         " placeholder="" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} disabled={disableForm} />
                         </label>
                         <label className={'block'}>
@@ -110,7 +110,7 @@ const ProjectForm = ({ projectData, onSubmitPressed, create = true, disableForm 
                         <label className={'block'}>
                             <h2 className={'text-center text-xl'}>Kapcsolattartók</h2>
                             <div className={'mb-6'}>
-                                {allContact.map((contact) => (
+                                {!disableForm && allContact.map((contact) => (
                                     <ContactListItem key={contact.id + '' + contact.email} id={contact.id} name={contact.name} email={contact.email} isAssigned={isContactAssignedToProject(contact)} variant={'project'} checkboxChanged={(e) => handleContactChecked(e.target.checked, contact.id)} />
                                 ))}
                             </div>
@@ -121,7 +121,7 @@ const ProjectForm = ({ projectData, onSubmitPressed, create = true, disableForm 
             </div >
 
             <ContactForm disableForm={disableForm} />
-        </div >
+        </div>
     )
 }
 
