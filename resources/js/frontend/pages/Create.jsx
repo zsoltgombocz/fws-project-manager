@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ProjectContext } from '../../state/ProjectContext';
 import FormSuccess from '../atom/FormSuccess';
@@ -6,17 +6,17 @@ import FormErrors from '../components/FormErrors';
 import ProjectForm from '../components/ProjectForm'
 
 const Create = () => {
-    const {createProject, refreshProjects} = useContext(ProjectContext);
+    const { createProject, refreshProjects } = useContext(ProjectContext);
     const navigate = useNavigate();
 
     const [errors, setErrors] = useState([]);
-    const [successMessage, setSuccessMessage] = useState([]);
+    const [successMessage, setSuccessMessage] = useState('');
     const [disableForm, setDisableForm] = useState(false);
     let timer;
     useEffect(() => {
-      return () => {
-        clearInterval(timer);
-      }
+        return () => {
+            clearInterval(timer);
+        }
     }, [])
 
     const handleCreate = (e, formData) => {
@@ -35,13 +35,13 @@ const Create = () => {
     }
 
     const redirectIn = (time, message) => {
-        if(timer === null || timer === undefined) {
+        if (timer === null || timer === undefined) {
             let curr = time;
             setSuccessMessage(`${message} Vissza irányítás ${curr / 1000}...`);
             timer = setInterval(() => {
-                if(curr <= 0){
+                if (curr <= 0) {
                     navigate('/');
-                }else{
+                } else {
                     curr = curr - 1000;
                     setSuccessMessage(`${message} Vissza irányítás ${curr / 1000}...`);
                 }
@@ -51,9 +51,9 @@ const Create = () => {
 
     return (
         <main className={'w-3/4 mx-auto'}>
-            <FormErrors errors={errors} />
-            <FormSuccess message={successMessage} />
-            <ProjectForm onSubmitPressed={handleCreate} create={true} disableForm={disableForm}/>
+            <FormErrors errors={errors} onClick={() => setErrors([])} />
+            <FormSuccess message={successMessage} onClick={() => setSuccessMessage('')} />
+            <ProjectForm onSubmitPressed={handleCreate} create={true} disableForm={disableForm} />
         </main>
     )
 }
