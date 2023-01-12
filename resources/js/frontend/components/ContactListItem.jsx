@@ -2,14 +2,14 @@ import React from 'react'
 import EditIcon from '../atom/EditIcon';
 import DeleteIcon from '../atom/DeleteIcon';
 
-const ContactListItem = ({ id, name, email, variant, onEditClick, onDeleteClick, isAssigned, checkboxChanged, disabledDelete = false }) => {
+const ContactListItem = ({ id, name, email, variant, onEditClick, onDeleteClick, isAssigned, checkboxChanged, disabledDelete = false, disabledEdit = false }) => {
     return (
         <div className={'mb-2 mt-2 flex flex-row items-center justify-between'}>
             <label htmlFor={`contact-${id}`}>{name} ({email})</label>
             <div className={'flex gap-5'}>
                 {variant === 'contact' && (
                     <>
-                        <EditIcon onClick={onEditClick} />
+                        <EditIcon onClick={onEditClick} disabled={disabledEdit} />
                         <DeleteIcon onClick={onDeleteClick} disabled={disabledDelete} />
                     </>
                 )}
