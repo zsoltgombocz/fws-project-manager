@@ -15,7 +15,7 @@ const ProjectStatus = ({ status, raw = false }) => {
 
     return raw ?
         STATUS_TEXT[status] :
-        (<span className={`font-normal ${STATUS_COLOR[status] && 'text-' + STATUS_COLOR[status]}`}>
+        (<span className={`font-normal ${STATUS_COLOR[status] !== null ? 'text-' + STATUS_COLOR[status] : ''}`}>
             {STATUS_TEXT[status]}
         </span>)
 }
