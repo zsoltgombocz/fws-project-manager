@@ -26,3 +26,6 @@ php artisan serve
 npm run dev
 php artisan queue:listen
 ```
+
+## The email
+![alt text](https://i.ibb.co/yk1pNPh/email.png3)
