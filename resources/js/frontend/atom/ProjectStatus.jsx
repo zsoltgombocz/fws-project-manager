@@ -1,14 +1,23 @@
 import React from 'react'
 
-const ProjectStatus = ({status}) => {
-    switch(status) {
-        case 0:
-            return (<span className={'font-normal'}>Fejlesztésre vár</span>)
-        case 1:
-            return (<span className={'font-normal text-blue-900'}>Folyamatban</span>)
-        case 2:
-            return (<span className={'font-normal text-green-900'}>Kész</span>)
-    }
+const ProjectStatus = ({ status, raw = false }) => {
+    const STATUS_TEXT = [
+        'Fejlesztésre vár',
+        'Folyamatban',
+        'Kész'
+    ];
+
+    const STATUS_COLOR = [
+        null,
+        'blue-900',
+        'green-900'
+    ]
+
+    return raw ?
+        STATUS_TEXT[status] :
+        (<span className={`font-normal ${STATUS_COLOR[status] && 'text-' + STATUS_COLOR[status]}`}>
+            {STATUS_TEXT[status]}
+        </span>)
 }
 
 export default ProjectStatus
