@@ -14,6 +14,9 @@ const Edit = () => {
     const [errors, setErrors] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
 
+    const [disableForm, setDisableForm] = useState(false);
+
+
     useEffect(() => {
         if (project === null && !isNaN(id)) {
             getProjectInformation(id).then(result => setProject(result)).catch(() => navigate('/', { replace: true }));
@@ -24,6 +27,7 @@ const Edit = () => {
 
     const handleFormSubmit = (e, formData) => {
         e.preventDefault();
+        setDisableForm(true);
         updateProject(formData.id, formData).then(res => {
             setSuccessMessage('Adatok frissítve!');
             setErrors([]);
@@ -31,7 +35,7 @@ const Edit = () => {
         }).catch(err => {
             setErrors(Object.entries(err));
             setSuccessMessage('');
-        })
+        }).finally(() => setDisableForm(false));
     }
 
 
@@ -39,7 +43,7 @@ const Edit = () => {
         <main className={'w-3/4 mx-auto'}>
             <FormErrors errors={errors} onClick={() => setErrors([])} />
             <FormSuccess message={successMessage} onClick={() => setSuccessMessage('')} />
-            <ProjectForm projectData={project} onSubmitPressed={handleFormSubmit} create={false} />
+            <ProjectForm projectData={project} onSubmitPressed={handleFormSubmit} create={false} disableForm={disableForm} />
         </main>
     )
 }
