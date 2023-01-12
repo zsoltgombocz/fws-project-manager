@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DeleteIcon = ({ onClick, disabled }) => {
+const DeleteIcon = ({ onClick, disabled = false }) => {
     return (
         <div onClick={disabled ? undefined : onClick} className={`${disabled ? 'text-gray-400' : 'hover:text-red-salsa cursor-pointer inline-block'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
