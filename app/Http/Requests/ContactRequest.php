@@ -25,7 +25,19 @@ class ContactRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'email' => 'required|unique:contacts|max:255|email',
+            'email' => 'required|unique:contacts,email,'.$this->id.'|max:255|email',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'A név kitöltése kötelező!',
+            'name.max' => 'A név nem haladhatja meg a 255 karaktert!',
+            'email.required' => 'E-mail megadása  kötelező!',
+            'email.unique' => 'Az e-mail már használatba van!',
+            'email.max' => 'Az e-mail nem haladhatja meg a 2048 karaktert!',
+            'email.email' => 'Nem megfelelő e-mail formátum!',
         ];
     }
 }
